@@ -6,14 +6,14 @@ import csv
 
 """
 to-do
-[-] unpacking
+[x] unpacking
 [x] packaging
 [ ] +- brutforse
 [ ] algorithm
 """
 
 
-def algorithm(data: np.ndarray) -> np.ndarray:
+def algorithm(data: np.ndarray, weights: np.ndarray) -> np.ndarray:
     """
     method of seatching for global hypotheses
     data: np.ndarray - input compatibility matrix
@@ -47,13 +47,18 @@ def main():
     output_file = args.o
 
     # ---------------parsing-file-------------------
-    data: np.ndarray
+    matrix: np.ndarray
+    weights: np.ndarray
     with open(input_file, encoding="utf-8") as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=",", quoting=csv.QUOTE_NONNUMERIC)
-        data = np.array(list(csv_reader), dtype=int)
+        csv_reader = csv.reader(csv_file, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
+        data = np.array(list(csv_reader), dtype=np.float32)
+        weights = data[:, -1:]
+        matrix = data[:, :-1] > 0
+        weights = np.rot90(weights)
+    # print(matrix, weights)
 
     # ------------------start-----------------------
-    output_data: np.ndarray = algorithm(data)
+    output_data: np.ndarray = algorithm(matrix, weights)
     packaging(output_file, output_data)
 
 
