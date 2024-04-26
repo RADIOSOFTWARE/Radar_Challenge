@@ -1,24 +1,51 @@
+# -----------import-library----------------
 import numpy as np
 import matplotlib
 import argparse
 import csv
 
-
 """
-to-do
+>[!Note]на *** артикли!
+##to-do
 [x] unpacking
 [x] packaging
-[ ] +- brutforse
+~~~[ ] +- brutforse on GPU~~~
 [ ] algorithm
+    - [ ] preparing data for graph
+    - [ ] preparing inverted data for graph
+    - [ ] painting graph
+    - [ ] painting weights on graph
+    - [ ] seatching way
+    - [ ] build data for packaging
+
+## notes
+try gpu computing
 """
+
+
+def preparing_matrix(matrix: np.ndarray) -> list:
+    points = []
+    for row in range(len(matrix) - 1):
+        for com in range(row + 1, len(matrix) - 1):
+            if matrix[row, com]:
+                continue
+            points.append((row, com))
+    return points
+
+
+def painting_graph() -> None:
+    pass
 
 
 def algorithm(data: np.ndarray, weights: np.ndarray) -> np.ndarray:
     """
     method of seatching for global hypotheses
+    weights: np.ndarray - input weights of rout hypotheses
     data: np.ndarray - input compatibility matrix
     """
+    graph_points = preparing_matrix(data)
 
+    print(graph_points)
     return data
 
 
@@ -36,7 +63,8 @@ def packaging(patch_file: str, data: np.ndarray) -> None:
 def main():
     # ---------------parser-config------------------
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("--i", help="Input compatibility matrix file in csv format")
+    arg_parser.add_argument(
+        "--i", help="Input compatibility matrix file in csv format")
     arg_parser.add_argument(
         "--o", help="Output global hypotheses file in csv", default="output.csv"
     )
@@ -50,7 +78,8 @@ def main():
     matrix: np.ndarray
     weights: np.ndarray
     with open(input_file, encoding="utf-8") as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
+        csv_reader = csv.reader(csv_file, delimiter="\t",
+                                quoting=csv.QUOTE_NONNUMERIC)
         data = np.array(list(csv_reader), dtype=np.float32)
         weights = data[:, -1:]
         matrix = data[:, :-1] > 0
