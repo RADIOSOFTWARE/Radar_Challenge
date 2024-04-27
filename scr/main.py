@@ -74,11 +74,37 @@ def algorithm(matrix: np.ndarray, weights: np.ndarray) -> np.ndarray:
     weights: np.ndarray - input weights of rout hypotheses
     matrix: np.ndarray - input compatibility matrix
     """
+    
     graph = create_graph(matrix)
     painting_graph(graph)
 
     return matrix
 
+def enum (matrix: np.ndarray, weights: np.ndarray) -> np.ndarray:
+     
+    """ 
+    GPU computing
+    """
+    n = matrix.shape[1]
+    matrix_enum = np.zeros([n*n,n], dtype=np.float32)
+    matrix_weights = np.zeros(n*n, dtype=np.float32)
+    matrix_out = np.zeros([n*n,n+1], dtype=np.float32)
+    for i in range(n):
+        for j in range(n):
+            for z in range(n):
+                matrix_enum[i*n+j,z] = matrix[i,j] * matrix[i,z]
+    
+    for i in range(n*n):
+        if np.array_equal(matrix_enum[i-1], matrix_enum[i]):
+            continue
+        else:
+            for j in range(n): 
+                matrix_weights[i] = matrix_weights[i] + matrix_enum[i,j] * weights[j]
+            matrix_out[i, 0:n-1] = matrix_enum[i, 0:n-1]
+            matrix_out[i,n] = matrix_weights[i]
+        matrix_sorted = matrix_out[matrix_out[:, n]. argsort ()[::-1]]
+        print("matrix_weights", matrix_weights)
+    return matrix_sorted
 
 def packaging(patch_file: str, data: np.ndarray) -> None:
     """
@@ -104,7 +130,7 @@ def main():
     args = arg_parser.parse_args()
     input_file = args.i
     output_file = args.o
-
+    
     # ---------------parsing-file-------------------
     matrix: np.ndarray
     weights: np.ndarray
@@ -114,13 +140,15 @@ def main():
         data = np.array(list(csv_reader), dtype=np.float32)
         weights = data[:, -1:]
         matrix = data[:, :-1] > 0
-        weights = np.rot90(weights)
+        weights = np.rot90(weights)[0]
     # print(matrix, weights)
 
     # ------------------start-----------------------
-    output_data: np.ndarray = algorithm(matrix, weights)
+    output_data = enum(matrix, weights)
+    print("output_data=",output_data)
+    print("shape",output_data.shape)
     packaging(output_file, output_data)
-
+    
 
 if __name__ == "__main__":
     main()
