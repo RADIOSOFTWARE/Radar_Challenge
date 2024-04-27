@@ -13,9 +13,9 @@ import csv
 [x] packaging
 ~~~[ ] +- brutforse on GPU~~~
 [ ] algorithm
-    - [ ] preparing data for graph
-    - [ ] preparing inverted data for graph
-    - [ ] painting graph
+    - [x] preparing data for graph
+    - [x] preparing inverted data for graph
+    - [x] painting graph
     - [ ] painting weights on graph
     - [ ] seatching way
     - [ ] build data for packaging
