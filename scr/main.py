@@ -16,18 +16,25 @@ import csv
     - [x] preparing data for graph
     - [x] preparing inverted data for graph
     - [x] painting graph
-    - [ ] painting weights on graph
+        -[x] saving image compatibility graph
+        -[x] saving image incompatibility graph
+    - [ ] adding weights on graph
+    - [x] 10:10 check point
     - [ ] seatching way
     - [ ] build data for packaging
-
+    - [ ] Решение задач на оптизацию/ линейно епрограмирование
+## Tehnologies:
+- python
+- numpy
+- networkx
 ## notes
 try gpu computing
 """
 
 
-def create_graph(matrix: np.ndarray) -> nx.Graph:
+def create_graph_incompatibility(matrix: np.ndarray) -> nx.Graph:
     """
-    Creating networkx graph dased on a compatibility matrix
+    Creating networkx graph dased on compatibility matrix
     matrix: np.ndarray - input compatibility matrix
     return - > networkx graph
     """
@@ -43,14 +50,14 @@ def create_graph(matrix: np.ndarray) -> nx.Graph:
     return graph
 
 
-def create_graph_testing(matrix: np.ndarray) -> nx.Graph:
+def create_graph_campatibility(matrix: np.ndarray) -> nx.Graph:
     """
     !old_version
-    Creating networkx graph dased on a compatibility matrix
+    Creating networkx graph dased on compatibility matrix
     matrix: np.ndarray - input compatibility matrix
     return - > networkx graph
     """
-    rows, cols = np.where(np.invert(matrix))
+    rows, cols = np.where(matrix)
     edges = zip(rows.tolist(), cols.tolist())
     graph = nx.Graph()
     graph.add_edges_from(edges)
@@ -72,7 +79,7 @@ def algorithm(matrix: np.ndarray, weights: np.ndarray) -> np.ndarray:
     weights: np.ndarray - input weights of rout hypotheses
     matrix: np.ndarray - input compatibility matrix
     """
-    graph = create_graph(matrix)
+    graph = create_graph_incompatibility(matrix)
     painting_graph(graph)
 
     return matrix
@@ -80,7 +87,9 @@ def algorithm(matrix: np.ndarray, weights: np.ndarray) -> np.ndarray:
 
 def packaging(patch_file: str, data: np.ndarray) -> None:
     """
-    method of packing of global hypotheses into a csv table
+    method of packing of global hypotheses into csv table
+    patch_file: str - path to file where output will be located if there is no output, create new one
+    data: np.ndarray - array of global hypotheses
     """
     quantity_column = len(data[0])
     with open(patch_file, "w", encoding="utf-8") as csv_file:
