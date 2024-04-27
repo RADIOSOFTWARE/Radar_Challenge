@@ -5,6 +5,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import argparse
 import csv
+import math
+from numba import cuda
 
 """
 >[!Note]на *** артикли!
