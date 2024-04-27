@@ -1,5 +1,5 @@
 # -----------import-library----------------
-import matplotlib
+import time
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -24,22 +24,28 @@ import csv
 try gpu computing
 """
 
-# -------------oldcode--------------------------------
 
-
-def preparing_matrix(matrix: np.ndarray) -> list:
+def create_graph(matrix: np.ndarray) -> nx.Graph:
+    """
+    Creating networkx graph dased on a compatibility matrix
+    matrix: np.ndarray - input compatibility matrix
+    return - > networkx graph
+    """
     points = []
-    for row in range(len(matrix) - 1):
-        for com in range(row + 1, len(matrix) - 1):
+    for row in range(len(matrix)):
+        for com in range(row + 1, len(matrix)):
             # autopep8: off
             if matrix[row, com]: continue
             # autopip8: on
             points.append((row, com)) 
+    graph = nx.Graph()
+    graph.add_edges_from(points)
+    return graph
 
-    return points
 
-def create_graph(matrix: np.ndarray) -> nx.Graph:
+def create_graph_testing(matrix: np.ndarray) -> nx.Graph:
     """
+    !old_version
     Creating networkx graph dased on a compatibility matrix
     matrix: np.ndarray - input compatibility matrix
     return - > networkx graph
@@ -55,7 +61,7 @@ def painting_graph(graph: nx.Graph) -> None:
     drawning graph using matplotlib
     graph: nx.Graph - networkx graph
     """
-    nx.draw(graph, node_size = 100)
+    nx.draw(graph, node_size = 250, with_labels=True)
     plt.show() 
     pass
 
@@ -66,7 +72,7 @@ def algorithm(matrix: np.ndarray, weights: np.ndarray) -> np.ndarray:
     weights: np.ndarray - input weights of rout hypotheses
     matrix: np.ndarray - input compatibility matrix
     """
-    graph: nx.Graph = create_graph(matrix)
+    graph = create_graph(matrix)
     painting_graph(graph)
 
     return matrix
