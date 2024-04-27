@@ -1,6 +1,8 @@
 # -----------import-library----------------
-import numpy as np
 import matplotlib
+import numpy as np
+import networkx as nx
+import matplotlib.pyplot as plt
 import argparse
 import csv
 
@@ -22,31 +24,52 @@ import csv
 try gpu computing
 """
 
+# -------------oldcode--------------------------------
+
 
 def preparing_matrix(matrix: np.ndarray) -> list:
     points = []
     for row in range(len(matrix) - 1):
         for com in range(row + 1, len(matrix) - 1):
-            if matrix[row, com]:
-                continue
-            points.append((row, com))
+            # autopep8: off
+            if matrix[row, com]: continue
+            # autopip8: on
+            points.append((row, com)) 
+
     return points
 
+def create_graph(matrix: np.ndarray) -> nx.Graph:
+    """
+    Creating networkx graph dased on a compatibility matrix
+    matrix: np.ndarray - input compatibility matrix
+    return - > networkx graph
+    """
+    rows, cols = np.where(np.invert(matrix))
+    edges = zip(rows.tolist(), cols.tolist())
+    graph = nx.Graph()
+    graph.add_edges_from(edges)
+    return graph
 
-def painting_graph() -> None:
+def painting_graph(graph: nx.Graph) -> None:
+    """
+    drawning graph using matplotlib
+    graph: nx.Graph - networkx graph
+    """
+    nx.draw(graph, node_size = 100)
+    plt.show() 
     pass
 
 
-def algorithm(data: np.ndarray, weights: np.ndarray) -> np.ndarray:
+def algorithm(matrix: np.ndarray, weights: np.ndarray) -> np.ndarray:
     """
     method of seatching for global hypotheses
     weights: np.ndarray - input weights of rout hypotheses
-    data: np.ndarray - input compatibility matrix
+    matrix: np.ndarray - input compatibility matrix
     """
-    graph_points = preparing_matrix(data)
+    graph: nx.Graph = create_graph(matrix)
+    painting_graph(graph)
 
-    print(graph_points)
-    return data
+    return matrix
 
 
 def packaging(patch_file: str, data: np.ndarray) -> None:
